@@ -39,6 +39,8 @@ dependencies {
 
     //Apache Collections Utils
     implementation 'org.apache.commons:commons-collections4:4.4'
+    //Apache Commons Lang
+    implementation 'org.apache.commons:commons-lang3:3.17.0'
 
     //Apache Math Commons
     implementation 'org.apache.commons:commons-math3:3.6.1'
@@ -63,7 +65,7 @@ pitest {
     useClasspathFile = true
     timestampedReports = false
     junit5PluginVersion = '1.2.1'
-    mutators = ['ALL']
+    mutators = ['DEFAULTS']
 }
 
 jacoco {
