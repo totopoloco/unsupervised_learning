@@ -19,7 +19,8 @@ public class KmeansService {
 
   public Pair<List<List<BigDecimal>>, List<Integer>> calculate(List<List<BigDecimal>> points, Integer k) {
 
-    final AtomicReference<List<List<BigDecimal>>> centroids = new AtomicReference<>(this.initializeCentroidsService.initialize(points, k));
+    final AtomicReference<List<List<BigDecimal>>> centroids =
+        new AtomicReference<>(this.initializeCentroidsService.initialize(points, k));
     final AtomicReference<List<Integer>> assignments = new AtomicReference<>(new ArrayList<>(points.size()));
 
     while (true) {
@@ -30,6 +31,7 @@ public class KmeansService {
       assignments.set(newAssignments);
       centroids.set(this.centroidsUpdateService.update(points, assignments.get(), k));
     }
+
 
     return Pair.of(centroids.get(), assignments.get());
   }
