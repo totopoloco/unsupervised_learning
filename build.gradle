@@ -1,0 +1,92 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.6'
+    id 'io.spring.dependency-management' version '1.1.6'
+    id 'info.solidsoft.pitest' version '1.15.0'
+    id 'jacoco'
+}
+
+group = 'at.mavila.unsupervised'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-graphql'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework:spring-webflux'
+    testImplementation 'org.springframework.graphql:spring-graphql-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    //Apache Collections Utils
+    implementation 'org.apache.commons:commons-collections4:4.4'
+
+    //Apache Math Commons
+    implementation 'org.apache.commons:commons-math3:3.6.1'
+
+    //Extra test dependencies
+    testImplementation 'net.jqwik:jqwik:1.8.5'
+    testImplementation 'net.jqwik:jqwik-spring:0.12.0'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+pitest {
+    targetClasses = ['at.mavila.unsupervised.*']
+    jvmArgs = ['-Xmx1024m', '-XX:+EnableDynamicAgentLoading']
+    pitestVersion = '1.15.0'
+    threads = 4
+    outputFormats = ['XML', 'HTML']
+    useClasspathFile = true
+    timestampedReports = false
+    junit5PluginVersion = '1.2.1'
+    mutators = ['ALL']
+}
+
+jacoco {
+    toolVersion = '0.8.10'
+}
+
+jacocoTestReport {
+
+    reports {
+        csv.required = true
+        html.required = true
+        xml.required = true
+    }
+    onlyIf {
+        true
+    }
+
+    executionData { tasks.withType(Test).findAll { it.state.executed }*.jacoco.destinationFile }
+}
+
+//Pitest depends on Jacoco
+tasks.named('pitest') {
+    dependsOn 'jacocoTestReport'
+}
+
+build.dependsOn 'pitest'
