@@ -22,13 +22,21 @@ class KmeansServiceTest {
   void testKmeans_withValidPoints() {
     List<List<BigDecimal>> dataSet = List.of(
         List.of(new BigDecimal("1"), new BigDecimal("1")),
-        List.of(new BigDecimal("2"), new BigDecimal("1")),
+        List.of(new BigDecimal("2"), new BigDecimal("2")),
         List.of(new BigDecimal("4"), new BigDecimal("3")),
         List.of(new BigDecimal("5"), new BigDecimal("4"))
     );
     Integer k = Integer.valueOf("2");
     Pair<List<List<BigDecimal>>, List<Integer>> calculate = this.kmeansService.calculate(dataSet, k);
     assertThat(calculate).isNotNull();
+    List<List<BigDecimal>> left = calculate.getLeft();
+    assertThat(left).isNotNull();
+    assertThat(left.size()).isEqualTo(k);
+
+    // Check centroids
+    // Sometimes the centroids are swapped, so we need to check both possibilities
+    assertThat(left.getFirst()).containsAnyOf(new BigDecimal("1.5"), new BigDecimal("4.5"));
+    assertThat(left.getLast()).containsAnyOf(new BigDecimal("1.5"), new BigDecimal("4.5"));
 
     // Print results
     reportDataSet(dataSet);

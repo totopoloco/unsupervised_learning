@@ -4,10 +4,15 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor(onConstructor_ = @Autowired)
 public class InitializeCentroidsService {
+
+  private final EuclideanDistanceBetweenPointsService euclideanDistanceBetweenPointsService;
 
   public List<List<BigDecimal>> initialize(List<List<BigDecimal>> points, Integer k) {
     List<List<BigDecimal>> centroids = new ArrayList<>();
@@ -27,16 +32,9 @@ public class InitializeCentroidsService {
 
   private List<BigDecimal> chooseNextCentroid(List<List<BigDecimal>> points, List<List<BigDecimal>> centroids) {
     double[] distances = new double[points.size()];
-    double totalDistance = 0;
-
-    // Calculate the distance of each point to the nearest centroid
-    for (int i = 0; i < points.size(); i++) {
-      distances[i] = getMinDistance(points.get(i), centroids);
-      totalDistance += distances[i];
-    }
 
     // Choose a random point weighted by the distance
-    double randomValue = Math.random() * totalDistance;
+    double randomValue = Math.random() * getTotalDistance(points, centroids, distances);
     for (int i = 0; i < points.size(); i++) {
       randomValue -= distances[i];
       if (randomValue <= 0) {
@@ -47,23 +45,25 @@ public class InitializeCentroidsService {
     return points.getLast();
   }
 
+  private double getTotalDistance(List<List<BigDecimal>> points, List<List<BigDecimal>> centroids, double[] distances) {
+    double totalDistance = 0;
+
+    // Calculate the distance of each point to the nearest centroid
+    for (int i = 0; i < points.size(); i++) {
+      distances[i] = getMinDistance(points.get(i), centroids);
+      totalDistance += distances[i];
+    }
+    return totalDistance;
+  }
+
   private double getMinDistance(List<BigDecimal> point, List<List<BigDecimal>> centroids) {
     double minDistance = Double.MAX_VALUE;
     for (List<BigDecimal> centroid : centroids) {
-      double distance = calculateDistance(point, centroid);
+      double distance = this.euclideanDistanceBetweenPointsService.calculate(List.of(point), List.of(centroid)).doubleValue();
       if (distance < minDistance) {
         minDistance = distance;
       }
     }
     return minDistance;
-  }
-
-  private double calculateDistance(List<BigDecimal> point1, List<BigDecimal> point2) {
-    double sum = 0;
-    for (int i = 0; i < point1.size(); i++) {
-      double diff = point1.get(i).subtract(point2.get(i)).doubleValue();
-      sum += diff * diff;
-    }
-    return sum;
   }
 }
