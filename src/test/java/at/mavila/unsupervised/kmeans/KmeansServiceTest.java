@@ -31,10 +31,9 @@ class KmeansServiceTest {
     assertThat(calculate).isNotNull();
 
     // Print results
+    reportDataSet(dataSet);
     reportCentroids(calculate);
-
     reportClusterAssignment(dataSet, calculate);
-
   }
 
   @Test
@@ -61,6 +60,7 @@ class KmeansServiceTest {
     assertThat(calculate).isNotNull();
 
     // Print results
+    reportDataSet(dataSet);
     reportCentroids(calculate);
     reportClusterAssignment(dataSet, calculate);
   }
@@ -83,6 +83,140 @@ class KmeansServiceTest {
     assertThat(calculate).isNotNull();
 
     // Print results
+    reportDataSet(dataSet);
+    reportCentroids(calculate);
+    reportClusterAssignment(dataSet, calculate);
+  }
+
+  @Test
+  void testKmeans_withValidPointsReducedWithThreeClusters() {
+    List<List<BigDecimal>> dataSet = List.of(
+        List.of(new BigDecimal("1"), new BigDecimal("1")),
+        List.of(new BigDecimal("1"), new BigDecimal("3.5")),
+        List.of(new BigDecimal("1.5"), new BigDecimal("4")),
+        List.of(new BigDecimal("3.5"), new BigDecimal("1")),
+        List.of(new BigDecimal("4"), new BigDecimal("1.5")),
+        List.of(new BigDecimal("4.5"), new BigDecimal("1.5")),
+        List.of(new BigDecimal("4.5"), new BigDecimal("2.5")),
+        List.of(new BigDecimal("4"), new BigDecimal("4"))
+
+    );
+    Integer k = Integer.valueOf("3");
+    Pair<List<List<BigDecimal>>, List<Integer>> calculate = this.kmeansService.calculate(dataSet, k);
+    assertThat(calculate).isNotNull();
+
+    // Print results
+    reportDataSet(dataSet);
+    reportCentroids(calculate);
+    reportClusterAssignment(dataSet, calculate);
+  }
+
+  @Test
+  void testKmeans_withValidPointsReducedWithThreeClustersWithAPointFarAway() {
+    List<List<BigDecimal>> dataSet = List.of(
+        List.of(new BigDecimal("1"), new BigDecimal("1")),
+        List.of(new BigDecimal("-10"), new BigDecimal("3.5")),
+        List.of(new BigDecimal("1.5"), new BigDecimal("4")),
+        List.of(new BigDecimal("3.5"), new BigDecimal("1")),
+        List.of(new BigDecimal("4"), new BigDecimal("1.5")),
+        List.of(new BigDecimal("4.5"), new BigDecimal("1.5")),
+        List.of(new BigDecimal("4.5"), new BigDecimal("2.5")),
+        List.of(new BigDecimal("4"), new BigDecimal("4"))
+
+    );
+    Integer k = Integer.valueOf("3");
+    Pair<List<List<BigDecimal>>, List<Integer>> calculate = this.kmeansService.calculate(dataSet, k);
+    assertThat(calculate).isNotNull();
+
+    // Print results
+    reportDataSet(dataSet);
+    reportCentroids(calculate);
+    reportClusterAssignment(dataSet, calculate);
+  }
+
+  @Test
+  void testKmeans_withValidPointsReducedWithThreeClustersWithAPointNear() {
+    List<List<BigDecimal>> dataSet = List.of(
+        List.of(new BigDecimal("1"), new BigDecimal("1")),
+        List.of(new BigDecimal("1"), new BigDecimal("1.2")),
+        List.of(new BigDecimal("1.5"), new BigDecimal("4")),
+        List.of(new BigDecimal("3.5"), new BigDecimal("1")),
+        List.of(new BigDecimal("4"), new BigDecimal("1.5")),
+        List.of(new BigDecimal("4.5"), new BigDecimal("1.5")),
+        List.of(new BigDecimal("4.5"), new BigDecimal("2.5")),
+        List.of(new BigDecimal("4"), new BigDecimal("4"))
+
+    );
+    Integer k = Integer.valueOf("3");
+    Pair<List<List<BigDecimal>>, List<Integer>> calculate = this.kmeansService.calculate(dataSet, k);
+    assertThat(calculate).isNotNull();
+
+    // Print results
+    reportDataSet(dataSet);
+    reportCentroids(calculate);
+    reportClusterAssignment(dataSet, calculate);
+  }
+
+  @Test
+  void testKmeans_withValidPointsReducedWithTwoClustersWithAPointNear() {
+    List<List<BigDecimal>> dataSet = List.of(
+        List.of(new BigDecimal("1"), new BigDecimal("0.5")),
+        List.of(new BigDecimal("1"), new BigDecimal("1.5")),
+        List.of(new BigDecimal("2.5"), new BigDecimal("1.5")),
+        List.of(new BigDecimal("2.5"), new BigDecimal("4")),
+        List.of(new BigDecimal("4.5"), new BigDecimal("1")),
+        List.of(new BigDecimal("3.5"), new BigDecimal("3.5")),
+        List.of(new BigDecimal("3.5"), new BigDecimal("4.5")),
+        List.of(new BigDecimal("4.5"), new BigDecimal("4.5")),
+        List.of(new BigDecimal("4.5"), new BigDecimal("5"))
+
+    );
+    Integer k = Integer.valueOf("2");
+    Pair<List<List<BigDecimal>>, List<Integer>> calculate = this.kmeansService.calculate(dataSet, k);
+    assertThat(calculate).isNotNull();
+
+    // Print results
+    reportDataSet(dataSet);
+    reportCentroids(calculate);
+    reportClusterAssignment(dataSet, calculate);
+  }
+
+  private void reportDataSet(List<List<BigDecimal>> dataSet) {
+    log.info("Data Set:");
+    for (List<BigDecimal> point : dataSet) {
+      log.info(Arrays.toString(point.toArray()));
+    }
+  }
+
+  @Test
+  void testKmeans_withLargeDataSet() {
+    List<List<BigDecimal>> dataSet = List.of(
+        // Cluster 1
+        List.of(new BigDecimal("1"), new BigDecimal("1")),
+        List.of(new BigDecimal("1.1"), new BigDecimal("1.1")),
+        List.of(new BigDecimal("0.9"), new BigDecimal("0.9")),
+        List.of(new BigDecimal("1.2"), new BigDecimal("1.2")),
+        List.of(new BigDecimal("0.8"), new BigDecimal("0.8")),
+        // Cluster 2
+        List.of(new BigDecimal("5"), new BigDecimal("5")),
+        List.of(new BigDecimal("5.1"), new BigDecimal("5.1")),
+        List.of(new BigDecimal("4.9"), new BigDecimal("4.9")),
+        List.of(new BigDecimal("5.2"), new BigDecimal("5.2")),
+        List.of(new BigDecimal("4.8"), new BigDecimal("4.8")),
+        // Cluster 3
+        List.of(new BigDecimal("9"), new BigDecimal("9")),
+        List.of(new BigDecimal("9.1"), new BigDecimal("9.1")),
+        List.of(new BigDecimal("8.9"), new BigDecimal("8.9")),
+        List.of(new BigDecimal("9.2"), new BigDecimal("9.2")),
+        List.of(new BigDecimal("8.8"), new BigDecimal("8.8"))
+    );
+    Integer k = Integer.valueOf("3");
+    Pair<List<List<BigDecimal>>, List<Integer>> calculate = this.kmeansService.calculate(dataSet, k);
+    assertThat(calculate).isNotNull();
+
+    // Print results
+    reportDataSet(dataSet);
+    JConsolePlotter.plot(dataSet);
     reportCentroids(calculate);
     reportClusterAssignment(dataSet, calculate);
   }
@@ -101,5 +235,6 @@ class KmeansServiceTest {
       log.info(Arrays.toString(centroid.toArray()));
     }
   }
+
 
 }

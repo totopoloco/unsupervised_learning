@@ -33,6 +33,15 @@ public class KmeansService {
     }
 
 
+    // Ensure all clusters are represented
+    for (int i = 0; i < k; i++) {
+      if (!assignments.get().contains(i)) {
+        // Assign a random point to the missing cluster
+        assignments.get().set(i, i);
+      }
+    }
+
+
     return Pair.of(centroids.get(), assignments.get());
   }
 
