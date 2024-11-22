@@ -216,7 +216,6 @@ class KmeansServiceTest {
 
     // Print results
     reportDataSet(dataSet);
-    JConsolePlotter.plot(dataSet);
     reportCentroids(calculate);
     reportClusterAssignment(dataSet, calculate);
   }
